@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>Designer</title>
+
+  <meta charset="utf-8">
+
+  <!--meta name="viewport"
+  content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes"-->
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="stylesheet" href="../public/dragula.css" media="screen" title="no title" charset="utf-8">
+  <!--link rel="stylesheet" href="../public/example.css" media="screen" title="no title" charset="utf-8"-->
+  <!--script src="../public/jquery-1.11.3.min.js"></script-->
+
+
+
+  <!--link rel="import" href="../components/font-roboto/roboto.html"-->
+
+  <link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+  <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+  <link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+  <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="../bower_components/paper-material/paper-material.html">
+  <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+  <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+  <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+  <link rel="import" href="../bower_components/paper-item/paper-item.html">
+  <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+  <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+  <link rel="import" href="../src/alfresco/alfresco-component.html">
+
+  <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+  <link rel="import" href="alfresco-components-import.html">
+
+  <style>
+    html,body {
+      height: 100%;
+      margin: 0;
+      background-color: #E5E5E5;
+      font-family: 'RobotoDraft', sans-serif;
+    }
+
+    paper-header-panel {
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    } ` `
+    .blue {
+      background: #03a9f4;
+      color: white;
+    }
+    .grey {
+      background: grey !important;
+      color: white;
+    }
+    tabs {
+      width: 100%;
+      margin: 0;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      text-transform: uppercase;
+    }
+
+     #main-panel {
+      width: 90%;
+      height: 90%;
+      margin: 50px auto;
+      /*padding: 10px;*/
+      background-color: white;
+    }
+
+    .box{
+      margin: 10px;
+      padding: 30px;
+      background: white;
+      align-items: center;
+    }
+    .main-panel-menu{
+      width: 100%;
+      height: 40px;
+      top:1px;
+      background-color: grey;
+      position: fixed;
+    }
+    .main-panel-body{
+      width:100%;
+      height: 100%;
+    }
+    @media (min-width: 481px) {
+      #tabs {
+        width: 200px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <paper-header-panel>
+    <!--Main menu-->
+    <paper-toolbar class="blue">
+      <paper-tabs id="tabs" selected="all" self-end>
+        <paper-tab name="all">All</paper-tab>
+        <paper-tab name="favorites">Favorites</paper-tab>
+      </paper-tabs>
+    </paper-toolbar>
+
+    <div>
+      <paper-drawer-panel>
+        <paper-header-panel drawer>          
+          <div id="component-panel" class='container'>
+            <!--ALfresco Components-->
+            <alfresco-component
+              title='alfresco-avatar'>
+            </alfresco-component>
+
+            <alfresco-component
+              title='alfresco-table'>
+            </alfresco-component>
+
+            <alfresco-component
+              title='forum-site-post-details'>
+            </alfresco-component>
+
+            <alfresco-component
+              title='forum-site-replies-list'>
+            </alfresco-component>
+
+          </div>
+        </paper-header-panel>
+
+        <paper-header-panel main>
+          <paper-material id="main-panel" elevation="2">
+            <!--div class="main-panel-menu"-->
+            <paper-toolbar class="grey">
+              <paper-icon-button icon="done"
+                onclick="document.querySelector('paper-tabs')"
+                style="float: right;">
+              </paper-icon-button>
+            <!--/div-->
+            </paper-toolbar>
+            <div class="main-panel-body" class='container'>
+
+            </div>
+          </paper-material>
+        </paper-header-panel>
+
+      </paper-drawer-panel>
+
+    </div>
+
+  </paper-header-panel>
+
+
+
+  <script src="../public/dragula.js"></script>
+  <script>
+    dragula([document.getElementById("component-panel"), document.getElementById("main-panel")], {
+      copy: function (el, source) {
+        return source.id === "component-panel"
+      },
+      accepts: function (el, target) {
+        return target.id !== "component-panel"
+      }
+    });
+    /*var tabs = document.querySelector('paper-tabs');
+    var list = document.querySelector('post-list');
+
+    tabs.addEventListener('core-select', function() {
+      list.show = tabs.selected;
+    });*/
+  </script>
+</body>
+
+</html>
