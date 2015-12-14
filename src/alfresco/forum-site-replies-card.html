@@ -1,0 +1,109 @@
+<!-- Imports polymer -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+
+<dom-module id="forum-site-replies-card">
+    <template>
+      <style>
+        :host {
+          display: block;
+          position: relative;
+          background-color: white;
+          padding: 20px;
+          width: 100%;
+          font-size: 1.2rem;
+          font-weight: 300;
+          box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+        .card-header {
+          margin-bottom: 10px;
+          align-items: center;
+          display: flex;
+        }
+
+        .card-header h2 {
+          margin: 0;
+          font-size: 1.8rem;
+          font-weight: 300;
+        }
+
+        .agree {
+          position: absolute;
+          top: 10px;
+          right: 50px;
+          color: #636363;
+        }
+        paper-icon-button {
+          position: absolute;
+          top: 3px;
+          right: 3px;
+          color: #636363;
+        }
+
+        .favicon{
+          color: #da4336;
+        }
+      </style>
+
+      <div class="card-header">
+
+        <content select="img"></content>
+        <content select="h2"></content>
+
+      </div>
+
+      <template is="dom-if" if="{{favorite}}">
+        <paper-icon-button class="favicon" icon="assignment" on-tap="favoriteTapped"></paper-icon-button>
+      </template>
+
+      <template is="dom-if" if="{{!favorite}}">
+        <paper-icon-button icon="assignment" on-tap="favoriteTapped"></paper-icon-button>
+      </template>
+
+      <iron-icon class="agree" icon='{{agreeIcon}}'></iron-icon>
+
+
+      <!--div class="" hidden$="{{!agree}}">
+        <iron-icon class="agree" icon="thumb-down">
+        </iron-icon>
+      </div-->
+
+      <!--iron-iconset class="agree" width="96" size="24"
+          icons="location place starta stopb bus car train walk">
+      </iron-iconset-->
+
+      <content></content>
+    </template>
+    <!-- Registers custom element -->
+    <script>
+      Polymer({
+          is: 'forum-site-replies-card',
+          properties: {
+              agree: {
+                type: Boolean,
+                observer:'setAgreeIcon'
+              },
+              favorite: {
+                type: Boolean,
+                value:false
+              },
+              agreeIcon: {
+                type: String
+              }
+          },
+          setAgreeIcon: function(){
+            this.agreeIcon = this.agree ? 'thumb-up' : 'thumb-down';
+            //console.debug(this.agreeIcon);
+          },
+          favoriteTapped: function(event, detail) {
+            this.favorite = !this.favorite;
+            //console.log(this.favorite);
+            //console.log(this.agree);
+            this.fire('favorite-tap');
+          }
+      });
+
+    </script>
+</dom-module>

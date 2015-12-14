@@ -1,0 +1,168 @@
+<!-- Imports polymer -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="stylesheet" type="text/css" href="../../public/datatables.min.css"/>
+
+<script type="text/javascript" src="../../public/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="../../public/datatables.min.js"></script>
+<link rel="stylesheet" href="../../public/datatables.min.css" media="screen" title="no title" charset="utf-8">
+
+<!-- Defines element markup -->
+<dom-module id="alfresco-table">
+    <template>
+      <style>
+        :host {
+          display: block;
+          margin: auto;
+          margin-left: 20px;
+          margin-right: 20px;
+          padding: 20px;
+          overflow: auto;
+          border-radius: 0.5%;
+          background-color: white;
+          box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+        /*:host:hover{
+          box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.34), 0px 1px 5px 0px rgba(0, 0, 0, 0.32), 0px 3px 1px -2px rgba(0, 0, 0, .22);
+        }*/
+      </style>
+
+      <iron-ajax url="{{getFullUrl(server,query)}}" on-error="onCallError" last-response="{{data}}"  auto>
+      </iron-ajax>
+
+
+      <table id="table">
+        <thead>
+
+        </thead>
+        <tfoot>
+
+        </tfoot>
+        <tbody>
+
+        </tbody>
+        <!--template is="dom-repeat" items="{{data.results}}">
+
+          <thead>
+            <template is="dom-repeat" items="{{toArray(item.properties)}}">
+          		<th>
+          			{{item.value.displayName}}
+          		</th>
+            </template>
+          </thead>
+
+          <tfoot>
+            <template is="dom-repeat" items="{{toArray(item.properties)}}">
+          		<th>
+          			{{item.value.displayName}}
+          		</th>
+            </template>
+          </tfoot>
+
+          <tbody>
+            <tr>
+            <template is="dom-repeat" items="{{toArray(item.properties)}}">
+
+
+          <td>
+            {{item.value.value}}
+          </td>
+
+
+        </template-->
+            <tr>
+          </tbody>
+
+        </template>
+      </table>
+
+    </template>
+    <!-- Registers custom element -->
+    <script>
+      Polymer({
+        properties: {
+            server: {
+              type: String
+            },
+            query: {
+              type: String
+            },
+            data:{
+              type:Array,
+              observer: 'dataObservedPropChanged'
+            }
+        },
+        dataObservedPropChanged : function(){
+          var thead="";
+          var tbody="";
+
+          this.data.results.forEach(function(e,i){
+            Object.keys(e.properties).forEach(function(name){
+              //console.debug(e.properties[name]);
+              if(!i)
+                thead+="<th>"+e.properties[name].displayName+"</th>";
+              tbody += "<td>"+e.properties[name].value+"</td>";
+            });
+          });
+
+          this.querySelector("thead").innerHTML = thead;
+          this.querySelector("tfoot").innerHTML = thead;
+          this.querySelector("tbody").innerHTML = tbody;
+
+          console.debug($('#table'))
+          $('#table').DataTable({
+            	//"dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+            	colReorder: true,
+            	language: {
+    			    "sProcessing":     "Procesando...",
+    			    "sLengthMenu":     "Mostrar _MENU_ registros",
+    			    "sZeroRecords":    "No se encontraron resultados",
+    			    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+    			    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+    			    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+    			    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+    			    "sInfoPostFix":    "",
+    			    "sSearch":         "Buscar:",
+    			    "sUrl":            "",
+    			    "sInfoThousands":  ",",
+    			    "sLoadingRecords": "Cargando...",
+    			    "oPaginate": {
+    			        "sFirst":    "Primero",
+    			        "sLast":     "Último",
+    			        "sNext":     "Siguiente",
+    			        "sPrevious": "Anterior"
+    			    },
+    			    "oAria": {
+    			        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+    			        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+    			    }
+    			}
+        	});
+        },
+        getFullUrl : function(server,query){
+          return server+
+                "/api/-default-/public/cmis/versions/1.1/browser?cmisselector=query&q="+
+                query;
+        },
+        toArray : function(object){
+          return Object.keys(object).map(function(key) {
+                return {
+                    name: key,
+                    value: object[key]
+                };
+            });
+        },
+        log:function(a){
+          console.debug(a)
+        },
+        ready : function(){
+          // data Table
+
+        }
+      });
+
+    </script>
+</dom-module>

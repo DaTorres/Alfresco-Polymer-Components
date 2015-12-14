@@ -1,0 +1,110 @@
+<!-- Imports polymer -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+
+<!-- Defines element markup -->
+<dom-module id="alfresco-component">
+    <template>
+      <style>
+        #dialob-body{
+          padding: 20px;
+        }
+      </style>
+      <paper-material id="paper-material" elevation="1" class="box" style="">
+          <p id="alfresco-component-title">{{title}}</p>
+          <paper-icon-button icon="close"
+            on-tap="close"
+            style="float: right;bottom:10px;">
+          </paper-icon-button>
+
+          <paper-icon-button
+            icon="create"
+            data-dialog="dialog"
+            role="button"
+            on-tap="toggleDialog"
+            style="float: right;bottom:10px;">
+          </paper-icon-button>
+
+          <paper-icon-button icon="done"
+            on-tap="donde"
+            style="float: right;bottom:10px;">
+          </paper-icon-button>
+
+      </paper-material>
+
+      <paper-dialog id="dialog" role="dialog">
+        <h2>Header</h2>
+        <paper-dialog-scrollable id="dialob-body">
+          Lorem ipsum...
+        </paper-dialog-scrollable>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Cancel</paper-button>
+          <paper-button dialog-confirm on-tap="setComponentAttribute">Accept</paper-button>
+        </div>
+      </paper-dialog>
+
+    </template>
+    <!-- Registers custom element -->
+    <script>
+      Polymer({
+        properties: {
+            server: {
+              type: String
+            },
+            user: {
+              type: String
+            },
+            title:{
+              type: String
+            },
+            component:{
+              type: Object
+            }
+        },
+        getUrl: function(user,server){
+            return server+"/service/slingshot/profile/avatar/"+user;
+        },
+        toggleDialog : function() {
+          this.querySelector('#dialog').toggle();
+        },
+        close : function(){
+          this.remove();
+        },
+        setComponentAttribute(){
+          if(this.component){
+            self = this;
+            Object.keys(this.component.properties).forEach(function(e){
+              self.component.setAttribute(e,self.querySelector('#alfresco-component-'+e).value);
+              //console.log(self.querySelector('#alfresco-component-'+e))
+            });
+          }
+        },
+        donde(){
+          if (this.querySelector(this.title)) {
+            this.querySelector(this.title).remove();
+          }
+          if (this.querySelector("#alfresco-component-title")) {
+            this.querySelector("#alfresco-component-title").remove();
+          }
+
+          var p = document.createElement(this.title);
+          this.querySelector('#paper-material').appendChild(p);
+          console.log(this.title)
+          p.ready();
+          this.component = p;
+
+          var htmlTemp=""
+          Object.keys(p.properties).forEach(function(e){
+            htmlTemp+='<paper-input label="'+e+'" id="alfresco-component-'+e+'"></paper-input><br/>' ;
+          });
+          this.querySelector('#dialob-body').innerHTML = htmlTemp;
+        }
+      });
+
+    </script>
+</dom-module>

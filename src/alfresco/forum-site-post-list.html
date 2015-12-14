@@ -1,0 +1,66 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="forum-site-post-card.html">
+
+<dom-module name="forum-site-post-list">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+      }
+      forum-site-post-card {
+        margin: 30px;
+      }
+    </style>
+
+    <iron-ajax url="{{getFullUrl(server,site)}}" last-response="{{data}}" on-error="onCallError" auto>
+    </iron-ajax>
+
+    <template is="dom-repeat" items="{{data.items}}">
+      <forum-site-post-card
+        agree="{{item.agree}}"
+        on-favorite-tap="handleFavorite"
+        hidden?="{{show == 'favorites' && !item.favorite}}">
+        <h2>{{item.title}}</h2>
+        <time>{{item.createdOn}}</time>
+        <p>{{item.content}}</p>
+      </forum-site-post-card>
+    </template>
+
+  </template>
+  <script>
+    Polymer({
+      properties: {
+          server: {
+            type: String
+          },
+          site: {
+            type: String
+          }
+      },
+      getFullUrl : function(server,site){
+        return server+
+              "/service/api/forum/site/"+
+              site+
+              "/discussions/posts";
+      },
+      getUrl: function(userName){
+        return "http://localhost:8080/alfresco/service/slingshot/profile/avatar/"+userName;
+      },
+      getFullName: function(first,last){
+        return first+" "+last;
+      },
+      onCallError: function(e){
+        alert(e.detail.error);
+      },
+      handleFavorite: function(event, detail){
+        //console.debug(event.model.get("item.text"))
+      },
+      ready : function(){
+
+      }
+    });
+  </script>
+</dom-module>

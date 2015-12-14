@@ -1,0 +1,131 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="alfresco-avatar.html">
+
+<link rel="stylesheet" href="../../bower_components/semantic-ui/semantic.min.css" media="screen"
+ title="Semantic-UI" charset="utf-8">
+<script type="text/javascript" src="../../bower_components/jquery/jquery.1.11.3.js">
+
+</script>
+
+<link rel="import" href="forum-site-post-card.html">
+
+<dom-module name="forum-site-post-details">
+  <template>
+    <style>
+      forum-site-post-card {
+        display: block;
+        /*width: 100%;*/
+      }
+      forum-site-post-card {
+        margin: 30px;
+      }
+      .top-rigth-1{
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+      .top-rigth-2{
+        position: absolute;
+        top: 10px;
+        right: 40px;
+      }
+      .top-rigth-3{
+        position: absolute;
+        top: 10px;
+        right: 70px;
+      }
+      .label-panel{
+        margin-top: 10px;
+      }
+    </style>
+
+    <iron-ajax url="{{getFullUrl(server,site,post)}}" on-error="onCallError" last-response="{{data}}"  auto>
+    </iron-ajax>
+
+    <forum-site-post-card
+      agree="{{data.item.agree}}"
+      on-favorite-tap="handleFavorite"
+      hidden?="{{show == 'favorites' && !item.favorite}}">
+
+      <alfresco-avatar
+       server="[[server]]"
+       user="{{data.item.author.username}}">
+      </alfresco-avatar>
+
+      <h2>{{data.item.title}}</h2>
+      <p id="data-item-content">{{setHtmlContent("#data-item-content",data.item.content)}}</p>
+
+      <iron-icon icon="icons:event"></iron-icon> <time>{{getDate(data.item.createdOn)}}</time>
+      <iron-icon icon="icons:schedule"></iron-icon> <time>{{getDateTime(data.item.createdOn)}}</time>
+
+      <p class="label-panel">
+        <template is="dom-repeat" items="{{data.item.tags}}">
+          <a class="ui tag label">{{item}}</a>
+        </template>
+
+      </p>
+
+
+      <template is="dom-if" if="{{data.item.permissions.edit}}">
+        <iron-icon icon="editor:mode-edit" class="top-rigth-1"></iron-icon>
+      </template>
+
+      <template is="dom-if" if="{{data.item.permissions.reply}}">
+        <iron-icon icon="editor:mode-comment" class="top-rigth-2"></iron-icon>
+      </template>
+
+      <template is="dom-if" if="{{data.item.permissions.delete}}">
+        <iron-icon icon="icons:delete" class="top-rigth-3"></iron-icon>
+      </template>
+    </forum-site-post-card>
+
+
+  </template>
+  <script>
+    Polymer({
+      properties: {
+          server: {
+            type: String
+          },
+          site: {
+            type: String
+          },
+          post: {
+            type: String
+          }
+      },
+      getFullUrl : function(server,site,post){
+        return server+
+              "/service/api/forum/post/site/"+
+              site+
+              "/discussions/"+post;
+      },
+      setHtmlContent: function(id,content){
+          $(id).html(content);
+      },
+      getFullName: function(first,last){
+        return first+" "+last;
+      },
+      getDate: function(date){
+        temDate = new Date(date);
+        return temDate.getDay()+"/"+(temDate.getMonth()+1)+"/"+temDate.getFullYear();
+      },
+      getDateTime: function(date){
+        temDate = new Date(date);
+        return temDate.getHours()+":"+temDate.getMinutes();
+      },
+      onCallError: function(e){
+        console.error(e.detail.error);
+      },
+      handleFavorite: function(event, detail){
+        //console.debug(event.model.get("item.text"))
+      },
+      ready : function(){
+        //console.log(this.server,this.site,this.post)
+      }
+    });
+  </script>
+</dom-module>

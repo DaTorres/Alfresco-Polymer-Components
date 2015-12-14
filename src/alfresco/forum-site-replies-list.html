@@ -1,0 +1,82 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="forum-site-replies-card.html">
+
+<dom-module name="forum-site-replies-list">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+      }
+      forum-site-replies-card {
+        margin-bottom: 30px;
+      }
+      img {
+        width: 70px;
+        border-radius: 50%;
+        margin: 10px;
+        box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+
+    <iron-ajax url="{{getFullUrl(server,site,post)}}" last-response="{{data}}" on-error="onCallError" auto>
+    </iron-ajax>
+
+    <template is="dom-repeat" items="{{data.items}}">
+      <forum-site-post-card
+        agree="{{item.agree}}"
+        on-favorite-tap="handleFavorite"
+        hidden?="{{show == 'favorites' && !item.favorite}}">
+        <!--img src="{{getUrl(item.author.username,server)}}" alt="No" width="70" height="70"-->
+        <alfresco-avatar
+         server="[[server]]"
+         user="{{item.author.username}}">
+        </alfresco-avatar>
+
+        <h2>{{getFullName(item.author.firstName,item.author.lastName)}}</h2>
+        <p>{{item.content}}</p>
+      </forum-site-post-card>
+    </template>
+
+  </template>
+  <script>
+    Polymer({
+      properties: {
+          server: {
+            type: String
+          },
+          site: {
+            type: String
+          },
+          post: {
+            type: String
+          }
+      },
+      getFullUrl : function(server,site,post){
+        return server+
+              "/service/api/forum/post/site/"+
+              site+
+              "/discussions/"+
+              post+
+              "/replies?levels=999";
+      },
+      getUrl: function(userName,server){
+          return server+"/service/slingshot/profile/avatar/"+userName;
+      },
+      getFullName: function(first,last){
+        return first+" "+last;
+      },
+      onCallError: function(e){
+        alert(e.detail.error);
+      },
+      handleFavorite: function(event, detail){
+        //console.debug(event.model.get("item.text"))
+      },
+      ready : function(){
+
+      }
+    });
+  </script>
+</dom-module>
